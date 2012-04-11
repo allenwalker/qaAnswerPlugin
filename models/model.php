@@ -4,21 +4,11 @@
 class Model {
 	public $questionIds;
 	public function __construct($result){
-	//khởi tạo csdl. Lấy hết dữ liệu ra rồi
-		//connect_db();
 		if(is_array($result)){
-			$index=0;
-			while ($element = current($result)){
-				$this->questionIds[$index]= key($result);
-				$index++;
-				next($result);
-			}
+                    $this->questionIds= array_keys($result);
 		}
 		else 
-			$this->questionIds="Has no question appropiate";
-		
-		//print_r($this->questionIds); ///////// Just Test
-		
+                    $this->questionIds="Has no question appropiate";	
 	}
 	
 	public function connect_db(){
@@ -32,29 +22,23 @@ class Model {
 	
 	
 	public function getQuestionList(){
-		$ids = join(',',$this->questionIds);
-                echo "<pre>";
-                print_r($this->questionIds);
-                echo "</pre>";
-                echo "<pre>";
-                print_r($ids);
-                echo "</pre>";
-		$sql = "SELECT id, title, tags,body FROM posts WHERE id IN ('$ids')";
-		$questionList = mysql_query($sql);
-		//return mysql_fetch_array($questionList);
-		//return $questionList;
-		//$index=0;
-		while($arrayList = mysql_fetch_array($questionList)){
-			$arrayQuestionList[]=$arrayList;
-			//$index++;
-		}
-                echo "<pre>";
-                print_r($arrayQuestionList);
-                echo "</pre>";
-		return $arrayQuestionList;
+            $arrayQuestionList = array();
+            $index=0;
+            foreach ($this->questionIds as $value){
+                $arrayQuestionList[$index]=$this->getQuestion($value);
+            }
+            //echo "<pre>";
+            //print_r($arrayQuestionList[0]);
+            //echo "</pre>";
+            return $arrayQuestionList;
 	}
 	
 	public function getQuestion($id){
+            $sql = "SELECT id, title, tags, body FROM posts WHERE id='$id'";
+            $result = mysql_fetch_array(mysql_query($sql));
+            $question = new Question($result['id'],$result['title'],$result['tags'],$result['body']);
+            $question->display();
+            return $question;
 	}
 }
 ?>
