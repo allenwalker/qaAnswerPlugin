@@ -26,10 +26,8 @@ class Model {
             $index=0;
             foreach ($this->questionIds as $value){
                 $arrayQuestionList[$index]=$this->getQuestion($value);
+                $index++;
             }
-            //echo "<pre>";
-            //print_r($arrayQuestionList[0]);
-            //echo "</pre>";
             return $arrayQuestionList;
 	}
 	
@@ -37,7 +35,7 @@ class Model {
             $sql = "SELECT id, title, tags, body FROM posts WHERE id='$id'";
             $result = mysql_fetch_array(mysql_query($sql));
             $question = new Question($result['id'],$result['title'],$result['tags'],$result['body']);
-            $question->display();
+            //$question->display();
             return $question;
 	}
 }
